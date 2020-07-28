@@ -33,8 +33,9 @@ if __name__ == '__main__':
 
     image = cv2.imread(args.image_path)
 
-    # Assume an HFOV of 90 degrees
-    focal_length = image.shape[0] / 2
+    # Assume an HFOV of 5 degrees
+    hfov_deg = 5.0
+    focal_length = (image.shape[0] / 2) / np.tan((hfov_deg/2)*180.0/np.pi)
 
     session_name = 'rotation_warp_image'
     tiler = ImageTile.get_instance(session=session_name)
@@ -55,7 +56,7 @@ if __name__ == '__main__':
 
         # Generate a random yaw, pitch, roll
         # It would be better to simulate a random walk on a sphere in a 4 dimensional space
-        std_dev_deg = 1.0
+        std_dev_deg = 0.01
 
         ypr = np.random.normal(loc=0.0, scale=std_dev_deg*np.pi/180.0, size=(3,))
 
