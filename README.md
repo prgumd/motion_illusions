@@ -1,7 +1,5 @@
 # Motion Illusions
 
-![What are the properties of a flow network that "sees" illusions)[https://lh6.googleusercontent.com/SpZ2J5Hji_Ndq2aXLA4JXOCt34W9hSmbvFM2g4rhDxPHlvEheF8cHl5_0HFasQLIgleNVSZok9EUm-Ohe-cfA9ra_-3LQCzj3xtvog8jtOo46-_KNQ]
-
 Support library for 2020 Telluride Neuromorphic Engineering Workshop Challenge "Insights into the Early Motion Pathway (VISION)"
 
 ## Dependencies
