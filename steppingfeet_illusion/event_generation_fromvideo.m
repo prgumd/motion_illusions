@@ -94,7 +94,7 @@ for i = 25 :1:n
         hold on;
     
 
-    dlmwrite('events_exp.txt' ,event_array, '-append');
+    dlmwrite('events.txt' ,event_array, '-append');
 
     plot3 (event_array(:,1), event_array(:,2), event_array(:,3),'.') 
     hold on;

@@ -11,15 +11,15 @@ event_array = [];
 eps = 0.01;
 
 
-fname1 = sprintf('raw/%04d.png', t*1000);
+fname1 = sprintf('sample_images/%04d.png', t*1000);
 I1 = double(rgb2gray(imread(fname1)));
-reference_values = log(eps+I1)
+reference_values = log(eps+I1);
 
 for i = 25 :1:100
     i
     event_array = [];
-    fname1 = sprintf('raw/%04d.png', i);
-    fname2 = sprintf('raw/%04d.png', i+1);
+    fname1 = sprintf('sample_images/%04d.png', i);
+    fname2 = sprintf('sample_images/%04d.png', i+1);
     I1 = double(rgb2gray(imread(fname1)));
     I2 = double(rgb2gray(imread(fname2)));
     I1log = log(eps+I1);
@@ -85,7 +85,7 @@ for i = 25 :1:100
         hold on;
     
 
-    dlmwrite('events_exp.txt' ,event_array, '-append');
+    dlmwrite('events.txt' ,event_array, '-append');
 
     plot3 (event_array(:,1), event_array(:,2), event_array(:,3),'.') 
     hold on;
