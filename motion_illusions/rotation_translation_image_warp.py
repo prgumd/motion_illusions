@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# File: first_order_rotation_image_warp.py
+# File: rotation_translation_image_warp.py
 #
 # Warp an image by a rotation.
 # This is a first order approximation, the instantaneous flow due
@@ -32,6 +32,13 @@ def discrete_optical_flow_due_to_rotation(yaw, pitch, roll, focal_length, grid_s
 
     # Channels first format
     return np.dstack((u_rot, v_rot))
+
+# Calculate an optical flow field due to a translation in XY plane
+# Assumes constant depth of Z = focal_length
+def discrete_optical_flow_due_to_2D_translation(u, v, grid_size):
+    (uu, vv) = np.meshgrid(np.repeat(v, grid_size[1]),
+                           np.repeat(u, grid_size[0]))
+    return np.dstack((uu, vv))
 
 def image_warp(image, flow):
     # Need to switch to channels first for handling color images
