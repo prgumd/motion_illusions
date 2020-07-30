@@ -15,10 +15,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from iemp.pytorch_unflow.run import estimate
+from motion_illusions.pytorch_unflow.run import estimate
 
-first_image = '../iemp/pytorch_unflow/images/first.png'
-second_image = '../iemp/pytorch_unflow/images/second.png'
+first_image = '../motion_illusions/pytorch_unflow/images/first.png'
+second_image = '../motion_illusions/pytorch_unflow/images/second.png'
 
 if __name__ == '__main__':
     first_tensor =  torch.from_numpy(np.moveaxis(cv2.imread(first_image).astype(np.float32), 2, 0) * 1.0/255.0)

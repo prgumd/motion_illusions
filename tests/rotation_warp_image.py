@@ -15,13 +15,13 @@ import time
 import cv2
 import numpy as np
 
-import iemp.utils.flow_plot as flow_plot
-from iemp.utils.image_tile import ImageTile
-from iemp.utils.signal_plot import SignalPlot
-from iemp.utils.rate_limit import RateLimit
-from iemp.utils.time_iterator import TimeIterator
+import motion_illusions.utils.flow_plot as flow_plot
+from motion_illusions.utils.image_tile import ImageTile
+from motion_illusions.utils.signal_plot import SignalPlot
+from motion_illusions.utils.rate_limit import RateLimit
+from motion_illusions.utils.time_iterator import TimeIterator
 
-from iemp import first_order_rotation_image_warp as rotation_warp
+from motion_illusions import first_order_rotation_image_warp as rotation_warp
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

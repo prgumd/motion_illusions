@@ -4,7 +4,7 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='iemp',
+    name='motion_illusions',
     version='0.0.1',
     author='Levi Burner',
     author_email='lburner@umd.edu',

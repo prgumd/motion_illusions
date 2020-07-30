@@ -17,7 +17,7 @@ Clone the repository, initiate submodules, download pre-trained UnFlow model wei
 git clone https://github.com/prgumd/motion_illusions.git
 cd motion_illusions
 git submodule update --init
-cd iemp/pytorch_unflow
+cd motion_illusions/pytorch_unflow
 bash download.bash
 ```
 
