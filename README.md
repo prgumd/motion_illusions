@@ -5,7 +5,7 @@ Support library for 2020 Telluride Neuromorphic Engineering Workshop Challenge "
 ## Stepping Feet Illusion 
 
 <video width="1140" height="450" controls>
-  <source src="bar_gradual.avi" type="video/mp4">
+  <source src="steppingfeet_matlab/bar_gradual.avi" type="video/avi">
 </video>
 
 ## Code
@@ -19,7 +19,7 @@ This software has MATLAB scripts for following functionalities:
 ## Dependencies
 
 This software has been tested with:
-* MATLAB R2017a >= 3.6
+* MATLAB R2017a 
 
 
 ## Dataset
