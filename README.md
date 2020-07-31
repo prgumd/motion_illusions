@@ -4,9 +4,6 @@ Support library for 2020 Telluride Neuromorphic Engineering Workshop Challenge "
 
 ## Stepping Feet Illusion 
 
-<video width="1140" height="450" controls>
-  <source src="steppingfeet_matlab/bar_gradual.avi" type="video/avi">
-</video>
 
 ## Code
 
