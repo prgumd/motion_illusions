@@ -1,8 +1,6 @@
-# Motion Illusions
+# Stepping Feet Illusion 
 
 Support library for 2020 Telluride Neuromorphic Engineering Workshop Challenge "Insights into the Early Motion Pathway (VISION)"
-
-## Stepping Feet Illusion 
 
 
 ## Code
