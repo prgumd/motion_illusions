@@ -11,6 +11,7 @@
 
 import argparse
 import time
+import os
 
 import cv2
 import numpy as np
@@ -26,6 +27,7 @@ from motion_illusions import rotation_translation_image_warp as warp
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--image', dest='image_path', help='image to warp and display')
+    parser.add_argument('--save_dir', dest='save_dir', help='folder to save generated image sequence')
     args = parser.parse_args()
 
     if args.image_path is None:
@@ -48,6 +50,7 @@ if __name__ == '__main__':
     last_wall_t = time.time()
     last_sim_t = time.time()
 
+    frame_id = 0
     # The simulation will be limited to this virtual speed in hz
     for sim_t in iter(TimeIterator(sim_rate_hz=60)):
         sim_delta_t = sim_t-last_sim_t
@@ -56,7 +59,7 @@ if __name__ == '__main__':
 
         # Generate a random yaw, pitch, roll
         # It would be better to simulate a random walk on a sphere in a 4 dimensional space
-        std_dev_deg = 0.01
+        std_dev_deg = 0.5
 
         ypr = np.random.normal(loc=0.0, scale=std_dev_deg*np.pi/180.0, size=(3,))
 
@@ -64,6 +67,12 @@ if __name__ == '__main__':
                                 ypr[0], ypr[1], ypr[2],
                                 focal_length, image.shape)
         warped_image = warp.image_warp(image, optical_flow_rot)
+
+
+        if args.save_dir:
+            file_name = 'image_{:06d}.png'.format(frame_id)
+            cv2.imwrite(os.path.join(args.save_dir, file_name), warped_image)
+            frame_id += 1
 
         tiler.add_image(image)
         tiler.add_image(warped_image)
