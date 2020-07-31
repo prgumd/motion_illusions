@@ -19,10 +19,9 @@ cd motion_illusions
 git submodule update --init
 ```
 
-Download pretrained [model weights](https://drive.google.com/file/d/16rOMerQvUnj6UjGjMyQayC1GcqaRu44b/view) from UnFlow authors. Put in `./motion_illusions`.
+Download pretrained [model weights](https://drive.google.com/file/d/16rOMerQvUnj6UjGjMyQayC1GcqaRu44b/view) from UnFlow authors. Put in root of project.
 
 ```bash
-cd motion_illusions/motion_illusions
 mkdir -p unflow_logs/ex
 unzip -d unflow_logs/ex unflow_models.zip
 ```
