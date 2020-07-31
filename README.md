@@ -20,7 +20,7 @@ This software has been tested with:
 
 ## Dataset
 
-This repository needs a stepping feet illusion dataset for experiments. (Link is will be updated soon!)
+This repository needs a stepping feet illusion dataset for experiments. (Link will be updated soon!)
 
 
 ## Contributors
