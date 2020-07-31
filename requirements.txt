@@ -2,5 +2,8 @@ flowiz
 matplotlib
 numpy
 opencv-python
+pillow
+pypng
 scipy
+rarfile==3.1
 tensorflow==1.7.1

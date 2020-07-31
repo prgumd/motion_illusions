@@ -4,7 +4,7 @@ Support library for 2020 Telluride Neuromorphic Engineering Workshop Challenge "
 
 ## Dependencies
 
-* Python >= 3.6
+* Python >= 3.5
 * CUDA enabled GPU
 * See `requirements.txt` for python dependencies
 
@@ -12,17 +12,24 @@ Support library for 2020 Telluride Neuromorphic Engineering Workshop Challenge "
 
 Since training neural networks is the goal it assumed a GPU is available.
 
-Clone the repository, initiate submodules, download pre-trained UnFlow model weights.
+Clone the repository, initiate submodules.
 ```bash
 git clone https://github.com/prgumd/motion_illusions.git
 cd motion_illusions
 git submodule update --init
-cd motion_illusions/pytorch_unflow
-bash download.bash
+```
+
+Download pretrained [model weights](https://drive.google.com/file/d/16rOMerQvUnj6UjGjMyQayC1GcqaRu44b/view) from UnFlow authors. Put in `./motion_illusions`.
+
+```bash
+cd motion_illusions/motion_illusions
+mkdir -p unflow_logs/ex
+unzip -d unflow_logs/ex unflow_models.zip
 ```
 
 ### Docker
-A Dockerfile is provided to build an image with all packages installed.
+A Dockerfile is provided to build an image with all packages installed. This is probably the easiest method to setup due to UnFlow needing an old version of CUDA and tensorflow.
+
 Some of the code assumes it can display GUIs using an X server. A `docker run` command is provided for Ubuntu host systems that configures the container for X forwarding.
 
 Make sure docker is installed with access to the GPU.
@@ -48,10 +55,9 @@ The container will complain about having no user due to overriding the uid and g
 ### Virtualenv
 
 Make sure the following is installed on the host.
-* CUDA 10.1 or higher
-* Python >= 3.6
+* CUDA 9.0
+* Python >= 3.5
 * virtualenv ('pip3 install virtualenv')
-
 
 Run the following steps to create a virtual environment, activate it, and install packages.
 

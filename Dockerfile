@@ -20,4 +20,3 @@ ENV HOME=/workdir
 # Docker command will mount this directory as volume to provide latest version
 COPY . /workdir
 RUN pip install -e .
-
