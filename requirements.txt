@@ -1,10 +1,6 @@
-cupy-cuda101==7.7.0
-flowiz==2.3.1
-matplotlib==3.3.0
-numpy==1.18.5
-opencv-python==4.3.0.36
-Pillow==7.2.0
-scipy==1.5.2
-torch==1.6.0
-torchvision==0.7.0
-
+flowiz
+matplotlib
+numpy
+opencv-python
+scipy
+tensorflow==1.7.1

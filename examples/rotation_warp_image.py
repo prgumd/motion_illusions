@@ -21,7 +21,7 @@ from motion_illusions.utils.signal_plot import SignalPlot
 from motion_illusions.utils.rate_limit import RateLimit
 from motion_illusions.utils.time_iterator import TimeIterator
 
-from motion_illusions import first_order_rotation_image_warp as rotation_warp
+from motion_illusions import rotation_translation_image_warp as warp
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -60,10 +60,10 @@ if __name__ == '__main__':
 
         ypr = np.random.normal(loc=0.0, scale=std_dev_deg*np.pi/180.0, size=(3,))
 
-        optical_flow_rot = rotation_warp.discrete_optical_flow_due_to_rotation(
+        optical_flow_rot = warp.discrete_optical_flow_due_to_rotation(
                                 ypr[0], ypr[1], ypr[2],
                                 focal_length, image.shape)
-        warped_image = rotation_warp.image_warp(image, optical_flow_rot)
+        warped_image = warp.image_warp(image, optical_flow_rot)
 
         tiler.add_image(image)
         tiler.add_image(warped_image)
