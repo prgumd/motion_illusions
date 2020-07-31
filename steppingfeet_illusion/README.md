@@ -7,10 +7,9 @@ Support library for 2020 Telluride Neuromorphic Engineering Workshop Challenge "
 
 This software has MATLAB scripts for following functionalities:
 
-* `./steppingfeet_illusion`
-    * `event_generation_fromvideo.m` Event generation from a video
-    * `event_generation_fromimages.m` Event generation from raw images
-    * `flow_fromvideo.m` Image Flow visualization 
+* `event_generation_fromimages.m` Event generation from raw images
+* `event_generation_fromvideo.m`Event generation from video
+* `flow_fromvideo.m`Image Flow visualization 
 
 ## Dependencies
 
@@ -20,8 +19,9 @@ This software has been tested with:
 
 ## Dataset
 
-This repository needs a stepping feet illusion dataset for experiments. (Link is will be updated soon!)
+This repository needs following stepping feet illusion dataset:
 
+* Link 
 
 ## Contributors
 
