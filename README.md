@@ -2,6 +2,10 @@
 
 Support library for 2020 Telluride Neuromorphic Engineering Workshop Challenge "Insights into the Early Motion Pathway (VISION)"
 
+A description of some of the illusions of interest is available [here](https://github.com/prgumd/motion_illusions/blob/master/project_overview.pdf).
+
+## Repository Contents
+
 This library implements helper functions for generating data representative of optical illusions humans experience.
 
 The `master` branch containers a Python package called `motion_illusions`. The package contains helper functions for simulating the illusory flow and bias estimation illusions.
