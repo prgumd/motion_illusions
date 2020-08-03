@@ -10,6 +10,7 @@
 #
 ###############################################################################
 
+import cv2
 import numpy as np
 
 # Generate an HSV image representing the color associated with the direction
@@ -42,3 +43,42 @@ def visualize_optical_flow(flow):
     flow_hsv[:, :, 2] = 255 * (flow_norms_normalized > 0)
 
     return flow_hsv
+
+# Plot a dense flow field on an image
+def dense_flow_as_quiver_plot(flow, image, scale_factor=(0.05, 0.05), color=(255, 0, 0), thickness=1):
+    flow_scaled = cv2.resize(flow, None, fx=scale_factor[1], fy=scale_factor[0])
+
+    x = np.arange(0, flow_scaled.shape[1], 1, dtype=np.float32) * image.shape[1] / flow_scaled.shape[1]
+    y = np.arange(0, flow_scaled.shape[0], 1, dtype=np.float32) * image.shape[0] / flow_scaled.shape[0]
+    xv, yv = np.meshgrid(x, y)
+
+    xv = xv.flatten()
+    yv = yv.flatten()
+    flow_x = flow_scaled[:, :, 0].flatten()
+    flow_y = flow_scaled[:, :, 1].flatten()
+
+    flow_list = np.stack((xv, yv, flow_x, flow_y), axis=1)
+
+    return sparse_flow_as_quiver_plot(flow_list, image, color, thickness)
+
+# Accept a list of optical flow vectors, plot them as arrows overlayed on an image
+def sparse_flow_as_quiver_plot(flow_list, image, color=(255,0,0), thickness=1):
+    for flow in flow_list:
+        start = flow[0:2]
+        end = flow[0:2] + flow[2:4]
+
+        cv2.line(image, tuple(start), tuple(end), color, thickness)
+
+        angle = np.arctan2(flow[2], flow[3])
+        mag = np.linalg.norm(flow[2:4])
+
+        angle_left = angle + np.pi / 4
+        angle_right = angle - np.pi / 4
+
+        tip_left_head  = end - 0.5 * mag * np.array((np.sin(angle + np.pi/4), np.cos(angle + np.pi/4)))
+        tip_right_head = end - 0.5 * mag * np.array((np.sin(angle - np.pi/4), np.cos(angle - np.pi/4)))
+
+        cv2.line(image, tuple(end), tuple(tip_left_head.astype(np.int32)), color, thickness)
+        cv2.line(image, tuple(end), tuple(tip_right_head.astype(np.int32)), color, thickness)
+
+    return image

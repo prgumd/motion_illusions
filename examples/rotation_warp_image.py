@@ -68,7 +68,6 @@ if __name__ == '__main__':
                                 focal_length, image.shape)
         warped_image = warp.image_warp(image, optical_flow_rot)
 
-
         if args.save_dir:
             file_name = 'image_{:06d}.png'.format(frame_id)
             cv2.imwrite(os.path.join(args.save_dir, file_name), warped_image)
@@ -81,6 +80,9 @@ if __name__ == '__main__':
         tiler.add_image(optical_flow_rot_image)
 
         tiler.add_image(flow_vis_image)
+
+        flow_on_image = flow_plot.dense_flow_as_quiver_plot(optical_flow_rot, np.copy(image))
+        tiler.add_image(flow_on_image)
 
         cv2.imshow(session_name, tiler.compose())
         cv2.setWindowTitle(session_name, session_name + ' real fps: {:.1f} sim fps: {:.1f}'.format(
