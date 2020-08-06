@@ -44,6 +44,15 @@ def visualize_optical_flow(flow):
 
     return flow_hsv
 
+def subtract_dense_flow_from_sparse_flow(flow_sparse, flow_dense):
+    print(flow_sparse[:, 0:2].astype(np.int64))
+    flow_dense_sparse = flow_dense[flow_sparse[:, 0:2].astype(np.int64)]
+    print(flow_dense.shape)
+    print(flow_dense_sparse.shape)
+
+    flow_sparse_subtracted = flow_sparse[:, 2:4] - flow_dense_sparse
+    return np.concatenate((flow_sparse[:, 0:2], flow_sparse_subtracted), axis=1)
+
 # Plot a dense flow field on an image
 def dense_flow_as_quiver_plot(flow, image, scale_factor=(0.05, 0.05), color=(255, 0, 0), thickness=1):
     flow_scaled = cv2.resize(flow, None, fx=scale_factor[1], fy=scale_factor[0])
