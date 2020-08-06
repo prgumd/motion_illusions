@@ -44,21 +44,35 @@ def visualize_optical_flow(flow):
 
     return flow_hsv
 
-# Plot a dense flow field on an image
-def dense_flow_as_quiver_plot(flow, image, scale_factor=(0.05, 0.05), color=(255, 0, 0), thickness=1):
-    flow_scaled = cv2.resize(flow, None, fx=scale_factor[1], fy=scale_factor[0])
+def subtract_dense_flow_from_sparse_flow(flow_sparse, flow_dense):
+    flow_dense_sparse = flow_dense[flow_sparse[:, 0].astype(np.int64),
+                                   flow_sparse[:, 1].astype(np.int64)]
 
-    x = np.arange(0, flow_scaled.shape[1], 1, dtype=np.float32) * image.shape[1] / flow_scaled.shape[1]
-    y = np.arange(0, flow_scaled.shape[0], 1, dtype=np.float32) * image.shape[0] / flow_scaled.shape[0]
+    flow_sparse_subtracted = flow_sparse[:, 2:4] - flow_dense_sparse
+    return np.concatenate((flow_sparse[:, 0:2], flow_sparse_subtracted), axis=1)
+
+def downsample_dense_flow(flow, scale_factor):
+    flow_scaled = cv2.resize(flow, None, fx=scale_factor[1], fy=scale_factor[0])
+    return flow_scaled
+
+def dense_flow_to_sparse_flow_list(flow, coordinate_scale=1.0):
+    x = np.arange(0, flow.shape[1], 1, dtype=np.float32) * coordinate_scale
+    y = np.arange(0, flow.shape[0], 1, dtype=np.float32) * coordinate_scale
     xv, yv = np.meshgrid(x, y)
 
     xv = xv.flatten()
     yv = yv.flatten()
-    flow_x = flow_scaled[:, :, 0].flatten()
-    flow_y = flow_scaled[:, :, 1].flatten()
+    flow_x = flow[:, :, 0].flatten()
+    flow_y = flow[:, :, 1].flatten()
 
     flow_list = np.stack((xv, yv, flow_x, flow_y), axis=1)
 
+    return flow_list
+
+# Plot a dense flow field on an image
+def dense_flow_as_quiver_plot(flow, image, scale_factor=(0.05, 0.05), color=(255, 0, 0), thickness=1):
+    flow_scaled = downsample_dense_flow(flow, scale_factor)
+    flow_list =  dense_flow_to_sparse_flow_list(flow_scaled, coordinate_scale=image.shape[0]/flow_scaled.shape[0])
     return sparse_flow_as_quiver_plot(flow_list, image, color, thickness)
 
 # Accept a list of optical flow vectors, plot them as arrows overlayed on an image
