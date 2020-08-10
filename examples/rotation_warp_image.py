@@ -23,7 +23,7 @@ from motion_illusions.utils.rate_limit import RateLimit
 from motion_illusions.utils.time_iterator import TimeIterator
 
 from motion_illusions import rotation_translation_image_warp as warp
-from motion_illusions import opencv_optical_flow
+#from motion_illusions import opencv_optical_flow
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -85,12 +85,14 @@ if __name__ == '__main__':
         flow_on_image = flow_plot.dense_flow_as_quiver_plot(optical_flow_rot, np.copy(image))
         tiler.add_image(flow_on_image)
 
-        lk_flow_list = opencv_optical_flow.opencv_lucas_kanade(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY),
-                                                               cv2.cvtColor(warped_image, cv2.COLOR_BGR2GRAY))
-        lk_flow_subtracted = flow_plot.subtract_dense_flow_from_sparse_flow(lk_flow_list, optical_flow_rot)
+        #lk_flow_list = opencv_optical_flow.opencv_lucas_kanade(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY),
+        #                                                       cv2.cvtColor(warped_image, cv2.COLOR_BGR2GRAY))
+        flow_scaled = flow_plot.downsample_dense_flow(optical_flow_rot, scale_factor=(0.05, 0.05))
+        flow_list = flow_plot.dense_flow_to_sparse_flow_list(flow_scaled, coordinate_scale=image.shape[0]/flow_scaled.shape[0])
+        lk_flow_subtracted = flow_plot.subtract_dense_flow_from_sparse_flow(flow_list, optical_flow_rot)
 
-        flow_on_image = flow_plot.sparse_flow_as_quiver_plot(lk_flow_subtracted, np.copy(image))
-        tiler.add_image(flow_on_image)
+        #flow_on_image = flow_plot.sparse_flow_as_quiver_plot(lk_flow_subtracted, np.copy(image))
+        #tiler.add_image(flow_on_image)
 
         cv2.imshow(session_name, tiler.compose())
         cv2.setWindowTitle(session_name, session_name + ' real fps: {:.1f} sim fps: {:.1f}'.format(
