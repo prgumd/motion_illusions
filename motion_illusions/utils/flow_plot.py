@@ -45,8 +45,8 @@ def visualize_optical_flow(flow):
     return flow_hsv
 
 def subtract_dense_flow_from_sparse_flow(flow_sparse, flow_dense):
-    flow_dense_sparse = flow_dense[flow_sparse[:, 0].astype(np.int64),
-                                   flow_sparse[:, 1].astype(np.int64)]
+    flow_dense_sparse = flow_dense[flow_sparse[:, 1].astype(np.int64),
+                                   flow_sparse[:, 0].astype(np.int64)]
 
     flow_sparse_subtracted = flow_sparse[:, 2:4] - flow_dense_sparse
     return np.concatenate((flow_sparse[:, 0:2], flow_sparse_subtracted), axis=1)

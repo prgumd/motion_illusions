@@ -12,6 +12,7 @@
 import argparse
 import time
 import os
+import glob
 
 import cv2
 import matplotlib.pyplot as plt
@@ -21,6 +22,8 @@ import motion_illusions.utils.flow_plot as flow_plot
 from motion_illusions.utils.image_tile import ImageTile
 from motion_illusions.generic_unflow_input import GenericUnflowInput
 from motion_illusions.evaluate_unflow import evaluate_experiment
+from motion_illusions.UnFlow.src.e2eflow.util import config_dict
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -30,10 +33,12 @@ if __name__ == '__main__':
     if args.image_dir is None:
         raise ValueError('Program must be passed a directory to load images from')
 
-    unflow_input = GenericUnflowInput(data=None, batch_size=1, normalize=False, dims=(1280,384), image_dir=args.image_dir)
+    unflow_input = GenericUnflowInput(data=None, batch_size=1, normalize=False, image_dir=args.image_dir)
 
     print('Running Unflow')
-    result, image_names = evaluate_experiment('unflow_config.ini', 'CSS', unflow_input.input_test, unflow_input, 15)
+    current_config = config_dict('./unflow_config.ini')
+    result, image_names = evaluate_experiment(current_config['dirs'],
+                                              'CSS', unflow_input, 15)
 
     session_name = 'rotation_warp_image'
     tiler = ImageTile.get_instance(session=session_name)
