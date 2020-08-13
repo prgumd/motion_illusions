@@ -19,22 +19,27 @@ class ImageTile(object):
     __instances = {}
 
     @staticmethod
-    def get_instance(session=None, max_width=1920):
+    def get_instance(session=None, max_width=1920, scale_factor=1.0):
         try:
             t = ImageTile.__instances[session]
         except KeyError:
-            ImageTile.__instances[session] = ImageTile(max_width)
+            ImageTile.__instances[session] = ImageTile(max_width, scale_factor)
 
         return ImageTile.__instances[session]
 
-    def __init__(self, max_width):
+    def __init__(self, max_width, scale_factor):
         self._images = []
 
         self._max_res_x = max_width
+        self._scale_factor = scale_factor
 
         self._i_shape = None
 
     def add_image(self, image):
+        width = int(image.shape[1] * self._scale_factor)
+        height = int(image.shape[0] * self._scale_factor)
+        image = cv2.resize(image, (width, height))
+
         # Convert from grayscale to color by default, this won't affect any rendering
         if len(image.shape) == 2:
             image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
