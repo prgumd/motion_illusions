@@ -35,7 +35,7 @@ def load_experiment_config_override_directories(override_dirs, override_res, exp
     exp_config_path = os.path.join(exp_dir, 'config.ini')
     if not os.path.isfile(exp_config_path):
         raise RuntimeError('Experiment directory must contain config file')
-    
+
     exp_config = config_dict(exp_config_path)
     exp_train_params = exp_config['train']
 
