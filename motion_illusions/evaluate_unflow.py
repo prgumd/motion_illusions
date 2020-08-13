@@ -113,10 +113,17 @@ def construct_graph(data_input, exp_train_params):
         flow_gt = resize_output_crop(flow_gt, height, width, 2)
         mask = resize_output_crop(mask, height, width, 1)
 
-        image_slots = [((im1 * 0.5 + im2 * 0.5) / 255, 'overlay'),
+        # image_slots = [((im1 * 0.5 + im2 * 0.5) / 255, 'overlay'),
+        #                (im1_diff / 255, 'brightness error'),
+        #                (flow_to_color(flow), 'flow'),
+        #                (flow_to_color(flow_gt, mask), 'gt'),
+        # ]
+
+        image_slots = [(im1 / 255, 'first image'), #((im1 * 0.5 + im2 * 0.5) / 255, 'overlay'),
+                       (im2 / 255, 'second image'),
                        (im1_diff / 255, 'brightness error'),
-                       (flow_to_color(flow), 'flow'),
-                       (flow_to_color(flow_gt, mask), 'gt'),
+                       (flow, 'flow'),
+                       (flow_gt, 'gt'),
         ]
 
         # list of (scalar_op, title)
