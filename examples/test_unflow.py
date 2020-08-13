@@ -43,10 +43,15 @@ if __name__ == '__main__':
     session_name = 'rotation_warp_image'
     tiler = ImageTile.get_instance(session=session_name)
 
-    for (image, error, flow) in result:
+    for r in result:
+        (image, error, flow, flow_gt) = r
         tiler.add_image(cv2.cvtColor(image[0, :, :, :], cv2.COLOR_RGB2BGR))
         tiler.add_image(cv2.cvtColor(error[0, :, :, :], cv2.COLOR_RGB2BGR))
         tiler.add_image(cv2.cvtColor(flow[0, :, :, :], cv2.COLOR_RGB2BGR))
+        tiler.add_image(cv2.cvtColor(flow_gt[0, :, :, :], cv2.COLOR_RGB2BGR))
+
+        flow_diff = flow - flow_gt
+        tiler.add_image(cv2.cvtColor(flow_diff[0, :, :, :], cv2.COLOR_RGB2BGR))
 
         cv2.imshow(session_name, tiler.compose())
         tiler.clear_scene()

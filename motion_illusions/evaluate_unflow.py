@@ -202,6 +202,6 @@ def evaluate_experiment(override_dirs, exp_name, data_input, num_frames_to_evalu
                                                      num_ims, flow, flow_bw, all_ops, scalar_names, num_frames_to_evaluate)
 
     for scalar_name, avg in zip(scalar_names, averages):
-        print("({}) {} = {}".format(name, scalar_name, avg))
+        print("({}) {} = {}".format(exp_name, scalar_name, avg))
 
     return image_lists, image_names
