@@ -1,10 +1,8 @@
-from tensorflow/tensorflow:1.7.1-devel-gpu-py3
+from nvidia/cuda:9.2-cudnn7-devel
 
 RUN apt-get update
-RUN apt-get install -y libsm6 libxext6 libxrender-dev libglib2.0-0 vim git wget python3-tk
-
-# Would be needed to run pytorch unflow, however the base docker image is mysteriously missing nvrtc shared library files
-#RUN pip install torch torchvision cupy-cuda90
+RUN apt-get install -y libsm6 libxext6 libxrender-dev libglib2.0-0 libgl1-mesa-dev git python3 python3-pip python3-tk
+RUN pip3 install --upgrade pip
 
 COPY requirements.txt /workdir/requirements.txt
 WORKDIR /workdir
@@ -20,3 +18,7 @@ ENV HOME=/workdir
 # Docker command will mount this directory as volume to provide latest version
 COPY . /workdir
 RUN pip install -e .
+
+# We do not actually need to build these CUDA modules, they aren't importable afterwards for some reason
+# If you run the container and then build it works well
+# RUN cd ./motion_illusions/flownet2-pytorch && bash install.sh

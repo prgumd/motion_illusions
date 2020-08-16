@@ -1,8 +1,25 @@
+# Notes
+# This person nicely tested out flownet versions to get everything working
+# The versions of pytorch specified in the readme do not work
+# https://github.com/NVIDIA/flownet2-pytorch/issues/156#issuecomment-609041509
+
+# Old scipy needed because code uses the imread function removed in 1.2.0
+# https://docs.scipy.org/doc/scipy-1.1.0/reference/generated/scipy.misc.imread.html
+
+# Torchvision compatibility matrix
+# https://pypi.org/project/torchvision/
+
+colorama
 matplotlib
 numpy
 opencv-python
 pillow
 pypng
-scipy
-rarfile==3.1
-tensorflow==1.7.1
+pytz
+scikit-image
+setproctitle
+scipy==1.1.0
+tensorboardX
+torch==1.4.0
+torchvision==0.5.0
+tqdm

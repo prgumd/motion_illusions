@@ -59,7 +59,7 @@ if __name__ == '__main__':
     focal_length = (image.shape[0] / 2) / np.tan((hfov_deg/2)*180.0/np.pi)
 
     session_name = 'rotation_warp_image'
-    tiler = ImageTile.get_instance(session=session_name, max_width=768*2, scale_factor=0.2)
+    tiler = ImageTile.get_instance(session=session_name, max_width=768*3, scale_factor=1.0)
 
     flow_vis_image = cv2.cvtColor(flow_plot.flow_direction_image(shape=image.shape), cv2.COLOR_HSV2BGR)
 
