@@ -1,5 +1,4 @@
 motion_illusions/flownet2-pytorch/mpi-sintel
-unflow_log
-unflow_data
-unflow_models.zip
+motion_illusions/flownet2-pytorch/work
+motion_illusions/flownet2-pytorch/checkpoints
 
