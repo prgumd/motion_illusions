@@ -66,7 +66,7 @@ cd motion_illusions
 git submodule update --init
 ```
 
-Download FlowNet2-SD pretrained [model weights](https://drive.google.com/file/d/1QW03eyYG_vD-dT-Mx4wopYvtPu_msTKn/view) and put in `motion_illusions/flownet2-pytorch/checkpoints`. You will need to create the folder.
+Download FlowNet2-SD pretrained [model weights](https://drive.google.com/file/d/1QW03eyYG_vD-dT-Mx4wopYvtPu_msTKn/view) and put in `motion_illusions/flownet2_pytorch/checkpoints`. You will need to create the folder.
 
 ### Docker
 A Dockerfile is provided to build an image with all packages installed.
@@ -95,7 +95,7 @@ The container will complain about having no user due to overriding the uid and g
 On first run the FlowNet2 CUDA modules need to built and installed manually. For some reason this is not working from the Dockerfile yet
 
 ```bash
-cd motion_illusions/flownet2-pytorch
+cd motion_illusions/flownet2_pytorch
 bash install.sh
 ```
 
@@ -120,7 +120,7 @@ pip install -e .
 
 ### Inference
 #### FlowNet2-SD - Flying Chairs SD
-Assumes Flying Chairs Small Displacement is extracted to `motion_illusions/flownet2-pytorch/ChairsSDHom`
+Assumes Flying Chairs Small Displacement is extracted to `motion_illusions/flownet2_pytorch/ChairsSDHom`
 
 For some reason EPE is very high with pre-trained weights, something may be wrong with the implementation, more investigation is needed.
 Full FlowNet2 model has low error as expected.
@@ -130,7 +130,7 @@ python3 main.py --inference --model FlowNet2SD --save_flow --inference_dataset C
 ```
 
 #### FlowNet2 - Sintel Clean
-Assumes Sintel full is downloaded to `motion_illusions/flownet2-pytorch/mpi-sintel`
+Assumes Sintel full is downloaded to `motion_illusions/flownet2_pytorch/mpi-sintel`
 
 ```bash
 python3 main.py --inference --model FlowNet2 --save_flow --inference_dataset MpiSintelClean --inference_dataset_root mpi-sintel/training --resume checkpoints/FlowNet2_checkpoint.pth.tar
@@ -144,7 +144,7 @@ python3 main.py --batch_size 8 --model FlowNet2SD --optimizer=Adam --loss=MultiS
 ```
 
 #### FlowNet2 - Sintel - L1
-Assumes Sintel full is downloaded to `motion_illusions/flownet2-pytorch/mpi-sintel`
+Assumes Sintel full is downloaded to `motion_illusions/flownet2_pytorch/mpi-sintel`
 
 ```bash
 python3 main.py --batch_size 8 --model FlowNet2 --loss=L1Loss --optimizer=Adam --optimizer_lr=1e-4 --training_dataset MpiSintelFinal --training_dataset_root mpi-sintel/training   --validation_dataset MpiSintelClean --validation_dataset_root mpi-sintel/training
