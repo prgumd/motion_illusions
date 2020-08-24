@@ -44,6 +44,12 @@ def visualize_optical_flow(flow):
 
     return flow_hsv
 
+# Generate an HSV image using color to represent the gradient direction
+# in a optical flow field.
+# Assumes channels last input
+def visualize_optical_flow_rgb(flow):
+    return cv2.cvtColor(visualize_optical_flow(flow), cv2.COLOR_HSV2RGB)
+
 def subtract_dense_flow_from_sparse_flow(flow_sparse, flow_dense):
     flow_dense_sparse = flow_dense[flow_sparse[:, 1].astype(np.int64),
                                    flow_sparse[:, 0].astype(np.int64)]
@@ -56,8 +62,8 @@ def downsample_dense_flow(flow, scale_factor):
     return flow_scaled
 
 def dense_flow_to_sparse_flow_list(flow, coordinate_scale=1.0):
-    x = np.arange(0, flow.shape[1], 1, dtype=np.float32) * coordinate_scale
-    y = np.arange(0, flow.shape[0], 1, dtype=np.float32) * coordinate_scale
+    x = np.arange(0, flow.shape[1], 1, dtype=np.float32) * coordinate_scale + coordinate_scale / 2.0
+    y = np.arange(0, flow.shape[0], 1, dtype=np.float32) * coordinate_scale + coordinate_scale / 2.0
     xv, yv = np.meshgrid(x, y)
 
     xv = xv.flatten()
@@ -70,7 +76,10 @@ def dense_flow_to_sparse_flow_list(flow, coordinate_scale=1.0):
     return flow_list
 
 # Plot a dense flow field on an image
-def dense_flow_as_quiver_plot(flow, image, scale_factor=(0.05, 0.05), quiver_scale=1.0, color=(255, 0, 0), thickness=1):
+def dense_flow_as_quiver_plot(flow, image=None, scale_factor=(0.05, 0.05), quiver_scale=1.0, color=(255, 0, 0), thickness=1):
+    if image is None:
+        image = np.zeros((flow.shape[0], flow.shape[1], 3), dtype=np.uint8)
+
     flow_scaled = downsample_dense_flow(flow, scale_factor)
     flow_list =  dense_flow_to_sparse_flow_list(flow_scaled, coordinate_scale=image.shape[0]/flow_scaled.shape[0])
     return sparse_flow_as_quiver_plot(flow_list, image, quiver_scale, color, thickness)
