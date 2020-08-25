@@ -44,11 +44,11 @@ def visualize_optical_flow(flow):
 
     return flow_hsv
 
-# Generate an HSV image using color to represent the gradient direction
-# in a optical flow field.
-# Assumes channels last input
 def visualize_optical_flow_rgb(flow):
     return cv2.cvtColor(visualize_optical_flow(flow), cv2.COLOR_HSV2RGB)
+
+def visualize_optical_flow_bgr(flow):
+    return cv2.cvtColor(visualize_optical_flow(flow), cv2.COLOR_HSV2BGR)
 
 def subtract_dense_flow_from_sparse_flow(flow_sparse, flow_dense):
     flow_dense_sparse = flow_dense[flow_sparse[:, 1].astype(np.int64),
