@@ -76,27 +76,35 @@ def dense_flow_to_sparse_flow_list(flow, coordinate_scale=1.0):
     return flow_list
 
 # Plot a dense flow field on an image
-def dense_flow_as_quiver_plot(flow, image=None, scale_factor=(0.05, 0.05), quiver_scale=1.0, color=(255, 0, 0), thickness=1):
+def dense_flow_as_quiver_plot(flow, image=None, scale_factor=(0.05, 0.05), quiver_scale=1.0, color=(255, 0, 0), thickness=1, angular=False):
     if image is None:
         image = np.zeros((flow.shape[0], flow.shape[1], 3), dtype=np.uint8)
 
     flow_scaled = downsample_dense_flow(flow, scale_factor)
     flow_list =  dense_flow_to_sparse_flow_list(flow_scaled, coordinate_scale=image.shape[0]/flow_scaled.shape[0])
-    return sparse_flow_as_quiver_plot(flow_list, image, quiver_scale, color, thickness)
+    return sparse_flow_as_quiver_plot(flow_list, image, quiver_scale, color, thickness, angular)
 
 # Accept a list of optical flow vectors, plot them as arrows overlayed on an image
-def sparse_flow_as_quiver_plot(flow_list, image, quiver_scale=1.0, color=(255,0,0), thickness=1):
+def sparse_flow_as_quiver_plot(flow_list, image, quiver_scale=1.0, color=(255,0,0), thickness=1, angular=False):
     for flow in flow_list:
         start = flow[0:2]
-        end = flow[0:2] + quiver_scale * flow[2:4]
+
+        if not angular:
+            end = flow[0:2] + quiver_scale * flow[2:4]
+        else:
+            end = flow[0:2] + quiver_scale * flow[2:4] / np.linalg.norm(flow[2:4])
 
         cv2.line(image, tuple(start), tuple(end), color, thickness)
 
         angle = np.arctan2(flow[2], flow[3])
-        mag = quiver_scale * np.linalg.norm(flow[2:4])
 
         angle_left = angle + np.pi / 4
         angle_right = angle - np.pi / 4
+
+        if not angular:
+            mag = quiver_scale * np.linalg.norm(flow[2:4])
+        else:
+            mag = quiver_scale
 
         tip_left_head  = end - 0.5 * mag * np.array((np.sin(angle + np.pi/4), np.cos(angle + np.pi/4)))
         tip_right_head = end - 0.5 * mag * np.array((np.sin(angle - np.pi/4), np.cos(angle - np.pi/4)))

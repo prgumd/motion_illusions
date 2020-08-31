@@ -47,6 +47,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--image', dest='image_path', help='image to warp and display')
     parser.add_argument('--save_dir', dest='save_dir', help='folder to save generated image sequence')
+    parser.add_argument('--interpolations', dest='interpolations', help='frames per saccade', default=2, type=int)
     args = parser.parse_args()
 
     if args.image_path is None:
@@ -72,6 +73,7 @@ if __name__ == '__main__':
     frame_id = 0
     optical_flow_rot_last = None
     last_warped_image = None
+    ypr_last = None
 
     # The simulation will be limited to this virtual speed in hz
     for sim_t in iter(TimeIterator(sim_rate_hz=60)):
@@ -81,75 +83,97 @@ if __name__ == '__main__':
 
         # Generate a random yaw, pitch, roll
         # It would be better to simulate a random walk on a sphere in a 4 dimensional space
-        std_dev_deg = 0.2
+        std_dev_deg = 0.2 * args.interpolations
 
         ypr = np.random.normal(loc=0.0, scale=std_dev_deg*np.pi/180.0, size=(3,))
 
         optical_flow_rot = warp.discrete_optical_flow_due_to_rotation(
                                 ypr[0], ypr[1], 0,
                                 focal_length, image.shape)
-        warped_image = warp.image_warp(image, optical_flow_rot)
 
         if last_warped_image is None:
+            warped_image = warp.image_warp(image, optical_flow_rot)
             last_warped_image = warped_image
             optical_flow_rot_last = optical_flow_rot
-            file_name = 'image_{:06d}.png'.format(frame_id)
-            cv2.imwrite(os.path.join(args.save_dir, file_name), warped_image)
-            frame_id += 1
+            ypr_last = ypr
+            file_name = 'image_{:06d}_{:06d}.png'.format(frame_id, 0)
+
+            if args.save_dir:
+                cv2.imwrite(os.path.join(args.save_dir, file_name), warped_image)
             continue
 
-        intermediate_flow = optical_flow_rot - optical_flow_rot_last
+        for i in range(1, args.interpolations+1):
+            d_ypr = (ypr - ypr_last) / args.interpolations
+            ypr_warp = ypr_last + i * d_ypr
 
-        if args.save_dir:
-            file_name = 'image_{:06d}.png'.format(frame_id)
-            cv2.imwrite(os.path.join(args.save_dir, file_name), warped_image)
+            real_optical_flow_rot = warp.discrete_optical_flow_due_to_rotation(
+                                                  d_ypr[0], d_ypr[1], 0,
+                                                  focal_length, image.shape)
 
-            flo_name = 'flow_{:06d}.flo'.format(frame_id-1)
-            write_flo(intermediate_flow, os.path.join(args.save_dir, flo_name))
-            frame_id += 1
+            optical_flow_rot_intermediate = warp.discrete_optical_flow_due_to_rotation(
+                                                  ypr_warp[0], ypr_warp[1], 0,
+                                                  focal_length, image.shape)
 
-        tiler.add_image(image)
-        tiler.add_image(last_warped_image)
-        tiler.add_image(warped_image)
+            warped_image = warp.image_warp(image, optical_flow_rot_intermediate)
 
-        intermediate_warped = warp.image_warp(last_warped_image, intermediate_flow)
-        tiler.add_image(intermediate_warped)
+            if args.save_dir:
+                if i == args.interpolations:
+                    number_str = '{:06d}_{:06d}'.format(frame_id+1, 0)
+                    flow_str   = '{:06d}_{:06d}'.format(frame_id, i-1)
+                else:
+                    number_str = '{:06d}_{:06d}'.format(frame_id, i)
+                    flow_str   = '{:06d}_{:06d}'.format(frame_id, i-1)
 
-        tiler.add_image(np.abs(intermediate_warped.astype(np.float32) - warped_image.astype(np.float32)).astype(np.uint8))
+                file_name = 'image_' + number_str + '.png'
+                cv2.imwrite(os.path.join(args.save_dir, file_name), warped_image)
 
-        optical_flow_rot_image = flow_plot.dense_flow_as_quiver_plot(optical_flow_rot_last, np.copy(image), color=(255, 0, 0))
-        tiler.add_image(optical_flow_rot_image)
+                flo_name = 'flow_' + flow_str + '.flo'
+                write_flo(real_optical_flow_rot, os.path.join(args.save_dir, flo_name))
 
-        optical_flow_rot_image = flow_plot.dense_flow_as_quiver_plot(optical_flow_rot, np.copy(optical_flow_rot_image), color=(0, 255, 0))
-        tiler.add_image(optical_flow_rot_image)
+            tiler.add_image(image)
+            tiler.add_image(last_warped_image)
+            tiler.add_image(warped_image)
 
-        optical_flow_rot_image = flow_plot.dense_flow_as_quiver_plot(intermediate_flow, np.copy(optical_flow_rot_image), color=(0, 0, 255))
-        tiler.add_image(optical_flow_rot_image)
+            # intermediate_warped = warp.image_warp(last_warped_image, intermediate_flow)
+            # tiler.add_image(intermediate_warped)
 
-        # optical_flow_rot_image = cv2.cvtColor(flow_plot.visualize_optical_flow(optical_flow_rot), cv2.COLOR_HSV2BGR)
-        # tiler.add_image(optical_flow_rot_image)
+            # tiler.add_image(np.abs(intermediate_warped.astype(np.float32) - warped_image.astype(np.float32)).astype(np.uint8))
 
-        #tiler.add_image(flow_vis_image)
+            optical_flow_rot_image = flow_plot.dense_flow_as_quiver_plot(optical_flow_rot_last, np.copy(image), color=(255, 0, 0))
+            tiler.add_image(optical_flow_rot_image)
 
-        # lk_flow_list = opencv_optical_flow.lucas_kanade(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY),
-        #                                                 cv2.cvtColor(warped_image, cv2.COLOR_BGR2GRAY))
-        # lk_flow_subtracted = flow_plot.subtract_dense_flow_from_sparse_flow(lk_flow_list, ground_truth_flow)
+            optical_flow_rot_image = flow_plot.dense_flow_as_quiver_plot(optical_flow_rot_intermediate, np.copy(optical_flow_rot_image), color=(0, 255, 0))
+            tiler.add_image(optical_flow_rot_image)
 
-        # flow_on_image = flow_plot.sparse_flow_as_quiver_plot(lk_flow_list, np.copy(image))
-        # tiler.add_image(flow_on_image)
+            optical_flow_rot_image = flow_plot.dense_flow_as_quiver_plot(real_optical_flow_rot, np.copy(optical_flow_rot_image), color=(0, 0, 255))
+            tiler.add_image(optical_flow_rot_image)
 
-        # flow_on_image = flow_plot.sparse_flow_as_quiver_plot(lk_flow_subtracted, np.copy(image))
-        # tiler.add_image(flow_on_image)
+            # optical_flow_rot_image = cv2.cvtColor(flow_plot.visualize_optical_flow(optical_flow_rot), cv2.COLOR_HSV2BGR)
+            # tiler.add_image(optical_flow_rot_image)
 
-        cv2.imshow(session_name, tiler.compose())
-        cv2.setWindowTitle(session_name, session_name + ' real fps: {:.1f} sim fps: {:.1f}'.format(
-            1.0 / wall_delta_t,
-            1.0 / sim_delta_t))
-        tiler.clear_scene()
-        cv2.waitKey(1)
+            #tiler.add_image(flow_vis_image)
 
+            # lk_flow_list = opencv_optical_flow.lucas_kanade(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY),
+            #                                                 cv2.cvtColor(warped_image, cv2.COLOR_BGR2GRAY))
+            # lk_flow_subtracted = flow_plot.subtract_dense_flow_from_sparse_flow(lk_flow_list, ground_truth_flow)
+
+            # flow_on_image = flow_plot.sparse_flow_as_quiver_plot(lk_flow_list, np.copy(image))
+            # tiler.add_image(flow_on_image)
+
+            # flow_on_image = flow_plot.sparse_flow_as_quiver_plot(lk_flow_subtracted, np.copy(image))
+            # tiler.add_image(flow_on_image)
+
+            cv2.imshow(session_name, tiler.compose())
+            cv2.setWindowTitle(session_name, session_name + ' real fps: {:.1f} sim fps: {:.1f}'.format(
+                1.0 / wall_delta_t,
+                1.0 / sim_delta_t))
+            tiler.clear_scene()
+            cv2.waitKey(1)
+
+        frame_id += 1
         last_warped_image = warped_image
         optical_flow_rot_last = optical_flow_rot
+        ypr_last = ypr
         rate_limit.sleep()
         last_sim_t = sim_t
         last_wall_t = wall_t
